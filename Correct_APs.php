@@ -3,24 +3,24 @@
 
 /////////////////////////////////////////// Includes //////////////////////////////////////////////
 
+ini_set("soap.wsdl_cache_enabled", "0");  // clean WSDL for develop
 ini_set("allow_url_fopen", true);
 date_default_timezone_set('America/Los_Angeles');
 include realpath(__DIR__ . '/../commonDirLocation.php');
 include realpath(COMMON_PHP_DIR . '/SlackMessagePost.php');
-include realpath(COMMON_PHP_DIR . '/checkOrgID.php');
-include realpath(COMMON_PHP_DIR . '/respond.php');
-include realpath(COMMON_PHP_DIR . '/parseNotification.php');///////////////////////////////////////////////  FUNCTIONS  ///////////////////////////////////////////
-include realpath(__DIR__ . '/../EnigmaCallAPI.php');
+include realpath(COMMON_PHP_DIR . '/toolkit/soapclient/SforceEnterpriseClient.php');
+include realpath(COMMON_PHP_DIR . '/production.userAuth.php');
 include realpath(COMMON_PHP_DIR . '/deleteOldLogs.php');
-include realpath(COMMON_PHP_DIR . '/checkWait.php');
 include realpath(COMMON_PHP_DIR . '/writelog.php');
 include realpath(COMMON_PHP_DIR . '/logTime.php');
+include realpath(__DIR__ . '/../EnigmaCallAPI.php');
 
 ini_set('soap.wsdl_cache_enabled',0); //this causes php to look at the wsdl every time and not cache it. If it is cached, then any edits to the wsdl will not be reflected unless this command is enabled.
 date_default_timezone_set('America/Los_Angeles');
 $f_name = pathinfo(__FILE__)['basename'];
 $f_dir = pathinfo(__FILE__)['dirname'];
-$log_dir = '/log/';
+
+///////////////////////////////////////////////  FUNCTIONS  ///////////////////////////////////////////
 
 
 function find_node_by_name($node_name = '') {
@@ -29,14 +29,13 @@ input name
 query goes out to enigma's API
 returns true if result; false if no result
 */
-  writelog("\nFinding by name...\n");
   $url = 'https://enig-01.unwiredbb.net/cgi-bin/protected/manage_api.cgi?action=get_data&select=hst_ip,hst_namea,site_code,hst_dsc,cst_code&from=hst&where=hst_namea+LIKE+%27%25' . $node_name . '%25%27';
                                                                                                           writelog("\n$url\n");
   if (!empty($node_name)) {
     $call_result = CallAPI($url);
 //    writelog($callResult);
     if ((preg_match('/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/', $call_result))) { //if there are any results, they will include an IP, but one not necessarily matching the find_node_ip, so just check if there is an IP pattern in the result
-      writelog("\nFound node\n");
+      writelog("\nFound node by name\n");
       return $call_result;
     } else {
       writelog("\nFailed to find node by name\n");
@@ -54,14 +53,13 @@ input ip address
 query goes out to enigma's API
 returns true if result; false if no result
 */
-  writelog("\nFinding by IP address...\n");
   $url = 'https://enig-01.unwiredbb.net/cgi-bin/protected/manage_api.cgi?action=get_data&select=hst_ip,hst_namea,site_code,hst_dsc,cst_code&from=hst&where=hst_ip+=+%27' . $node_ip . '%27';
                                                                                                           writelog("\n$url\n");
   if (!empty($node_ip)) {
     $call_result = CallAPI($url);
 //    writelog($callResult);
     if ((!empty($call_result)) and (preg_match('/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/', $call_result))) { //if there are any results, they will include an IP, but one not necessarily matching the find_node_ip, so just check if there is an IP pattern in the result
-      writelog("\nFound node\n");
+      writelog("\nFound node by IP address\n");
       return $call_result;
     } else {
       writelog("\nFailed to find node by ip\n");
@@ -83,8 +81,8 @@ function find_node_by_SF_id($SF_id = '') {
     return 0;
   }
   if ((!empty($call_result)) and (preg_match('/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/', $call_result))) {
-    writelog("\nFound by SF_id\n");
-//                                                                                                        writelog($call_result);
+    writelog("\nFound node by SF_id\n");
+//    writelog($call_result);
     return $call_result;
   } else {
     writelog("\nFailed to find node by SF_id\n");
@@ -180,7 +178,7 @@ This function assumes the device was found using list_node()
     writelog("\n$urlS2\n$urlS3\n$urlS4\n$urlS5\n$urlS6\n$urlS7\n$urlS8\n$urlS9");
     return 0;
   }
-}  //end function modify_node
+}  //end function modify node
 
 
 
@@ -204,56 +202,120 @@ function del_node($del_node_name)
 
 
 /////////////////////////////// START EXECUTION CODE ///////////////////////////////////////////
-deleteOldLogs($f_dir . $log_dir, 90);
 log_time();
 
-ob_start();
+///Salesforce API stuff///
+/// The code below queries Salesforce and puts the results into an array:  $record_arr
+
+$obj = 'Access_Point__c'; // salesforce object we want to query
+$get_fields = 'Id,Tower__r.Site_Code__c,Name,IP__c,General_Direction__c,Status__c'; // comma-delimited string: fields we want to query for (found in Salesforce>Setup>Create>Objects[Standard Fields|Custom Fields & Relationships])
+$where_clause = '';
+$query_return_limit = '2000';
+$wsdl = COMMON_PHP_DIR . '/wsdl/production.enterprise.wsdl.old';
+$down_event_alarm_delay = '0';
 
 
-$req = file_get_contents('php://input');
-if (empty($req)) {
-  writelog("\n\nRequest is empty. Responding true and exiting...");
-  respond('true');
-  exit;
+try {
+  $mySforceConnection = new SforceEnterpriseClient();
+  $mySoapClient = $mySforceConnection->createConnection($wsdl);
+  $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
+  if (empty($where_clause)){
+    $query = "SELECT $get_fields FROM $obj LIMIT $query_return_limit"; //soql query
+  } else {
+    $query = "SELECT $get_fields FROM $obj WHERE $where_clause LIMIT $query_return_limit"; //soql query
+  }
+
+  $options = new QueryOptions(300);  //Set query to return results in chunks
+  $mySforceConnection->setQueryOptions($options);
+  $done = false;
+  $response = $mySforceConnection->query(($query));
+  echo "Size of records:  " . $response->size."\n";
+  $record_arr=array();
+  if ($response->size > 0) {
+    while (!$done) {
+      foreach ($response->records as $record) {
+
+//print_r("\n\n");
+//print_r($record);
+        if (!(empty($record->Id))) {
+          $Id = $record->Id;
+          $record_arr[$Id] = array();
+          $record_arr[$Id]['Site_Code__c'] = $record->Tower__r->Site_Code__c;
+          $record_arr[$Id]['Name'] = $record->Name;
+          $record_arr[$Id]['Status__c'] = $record->Status__c;
+          if (!empty($record->IP__c)) {
+            $record_arr[$Id]['IP__c'] = $record->IP__c;
+          } else {
+            $record_arr[$Id]['IP__c'] = '';
+          }
+          if (!empty($record->General_Direction__c)) {
+            $record_arr[$Id]['General_Direction__c'] = "$record->General_Direction__c";
+          } else {
+            $record_arr[$Id]['General_Direction__c'] = '';
+          }
+        }
+      }
+      if ($response->done == true) {
+        $done = true;
+      } else {
+//      echo "***** Get Next Chunk *****\n";
+        $response = $mySforceConnection->queryMore($response->queryLocator);
+//                                                                                            print_r($response);
+//  print_r($mySforceConnection->getLastRequest());
+      }
+    }
+  }
+} catch (Exception $e) {
+    echo 'Caught exception: ',  $e->getMessage(), "\n";
 }
-//                                                                                      writelog("\n\nREQ:\n\n");
-//                                                                                      writelog($req);
-$xml = new DOMDocument();
-$xml->loadXML($req);
-$requestArray = parseNotification($xml);
-//                                                                                      writelog("\n\nREQ ARRAY:\n\n");
-//                                                                                      writelog($requestArray);
+
+
+
+//conversion table
+
+$AZ_convert = array(
+'North' => '000',
+'Northeast' => '045',
+'East' => '090',
+'Southeast' => '135',
+'South' => '180',
+'Southwest' => '225',
+'West' => '270',
+'Northwest' => '315'
+);
+
+
 
 
 $success = 0;
-$fail_end = 0;
-$arr_size = count($requestArray['MapsRecords']);
-for($i=0;$i<$arr_size;$i++) {
-  $SF_id = $requestArray['MapsRecords'][$i]['Id'];
-  $SF_ap_name = $requestArray['MapsRecords'][$i]['Name'];
-  if (!empty($requestArray['MapsRecords'][$i]['IP__c'])) {
-    $SF_ap_ip = $requestArray['MapsRecords'][$i]['IP__c'];
-  } else {
-    $SF_ap_ip = '';
-  }
-  $AP_standard_name = $requestArray['MapsRecords'][$i]['AP_Standard_Name__c'];
-  $site_code = substr($AP_standard_name, 0, 4); //get first 4 characters of the AP name ($ap)
-  $SF_ap_status = $requestArray['MapsRecords'][$i]['Status__c'];
-                                                                                      writelog("\n\nSF_id: $SF_id\nSF AP IP: $SF_ap_ip\nSF Site Code: $site_code\nSF AP Name: $SF_ap_name\n");
+
+
+foreach ($record_arr as $SF_id => $SF_id_arr) {
+  writelog("\n\n\n_______________________________________________________________________________________________________ ");
+  $modify_flag = 0; //default setting
   $src_node_ip = '10.12.13.50';
-  $src_node_name = '0_ap_template_1';
-  $down_event_alarm_delay = '0';
-  $modify_flag = 0;
-                                                                                      writelog("\nSource Node Name: $AP_standard_name");
-                                                                                      writelog("\nSource Node IP: $SF_ap_ip");
+  $src_node_name = '0_AP_Template_1';
+
+  //print_r($SF_id);
+  //print_r($SF_id_arr);
+  $SF_ap_name = $SF_id_arr['Name'];
+  $site_code = $SF_id_arr['Site_Code__c'];
+  $SF_ap_ip = $SF_id_arr['IP__c'];
+  $ip_split = explode(".", $SF_ap_ip);
+  $ip_octet3 = $ip_split[2];
+  $ip_octet4 = $ip_split[3];
+  //print_r($SF_id_arr['General_Direction__c']);
+  $SF_general_direction = $SF_id_arr['General_Direction__c'];
+  $SF_azimuth = $AZ_convert[$SF_general_direction];
+  //print_r($SF_azimuth);
+  $AP_standard_name = $site_code . '-ap-' . $ip_octet3 . '-' . $ip_octet4 . '-' . $SF_azimuth ;
+  $SF_ap_status = $SF_id_arr['Status__c'];
+  //print_r($site_code);
+                                                                                       writelog("\nSource Node Name: $AP_standard_name");
+                                                                                       writelog("\nSource Node IP: $SF_ap_ip");
   $new_node_name = $AP_standard_name;
-  if (!preg_match('/[a-z0-9]{4}-ap-\d{1,3}-\d{1,3}-(000|045|090|135|180|225|270|315|360)/',$new_node_name)) {
-    $new_node_name = $new_node_name . '_FIX_NAME';
-  }
-  $proto = array('https://','http://');
-  $new_node_ip = str_replace($proto, '', $SF_ap_ip);
+  $new_node_ip = str_replace('https://', '', $SF_ap_ip);
   $new_node_desc = 'https://na131.salesforce.com/' . $SF_id;
-  
 
   if ($find_node_result = find_node_by_SF_id($SF_id)) {
     $found_in_Enigma = 1;
@@ -289,16 +351,15 @@ for($i=0;$i<$arr_size;$i++) {
       preg_match('/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/', $find_node_result, $m);  //Get the Enigma AP IP
       $ENIG_ip = $m[0];
       
-      writelog("\n\nEnigma AP Name: $ENIG_ap_name_str\nEnigma AP IP: $ENIG_ip\nEnigma AP Site Code: $ENIG_ap_site_code_str\nEnigma AP Description: $ENIG_ap_dsc_str");
+      writelog("\n\nEnigma AP Name: $ENIG_ap_name_str\nEnigma AP IP: $ENIG_ip\nEnigma AP Site Code: $ENIG_ap_site_code_str\nEnigma AP Description: $ENIG_ap_dsc_str\n");
   
-      if (($SF_ap_status == 'Removed') or ($SF_ap_status == 'Non Opmode')) { // If the status of the AP is Removed or Non Opmode, check to see if the Enigma node was found earlier.
-                                                                             // If not, success. If so, delete Enigma node. Do a followup check to make sure it has been removed. If it has, success = 1
+      if (($SF_ap_status == 'Removed') or ($SF_ap_status == 'Non Opmode')) { // If the status of the AP is Removed or Non Opmode, check to see if the Enigma node was found earlier. If not, success. If so, delete Enigma node. Do a followup check to make sure it has been removed. If it has, success = 1
         if (!$found_in_Enigma) { //if not found, good! We were trying to delete it anyway.
           $success = 1;
         } else {
           $del_node_result = del_node($ENIG_ap_name_str);
           if ($del_node_result == 1) {
-            $find_node_result2 = find_node_by_ip($SF_ap_ip);
+            $find_node_result2 = find_node_by_ip($ENIG_ip);
             if ($find_node_result2 == 0) {
               $success = 1;
             } else {
@@ -306,9 +367,10 @@ for($i=0;$i<$arr_size;$i++) {
                                                                                          writelog("ERROR - $SF_ap_name - del_node failed. Node still found.");
             }
           } else {
-            writelog("ERROR - $SF_ap_name - del_node function failed.");
+                                                                                         writelog("ERROR - $SF_ap_name - del_node function failed.");
           }
         }
+        continue;
       }
       //Check to see if modification is needed.
       $test_arrs = array (
@@ -348,9 +410,9 @@ for($i=0;$i<$arr_size;$i++) {
         if (!$modify_flag) {
           writelog("\nNot modifying anything." );
         }
-        writelog("\n");
             
         if ($modify_flag) {
+                                                                                        writelog("\n");
           $src_node_ip = $ENIG_ip;
           //new_node_ip is already defined at start of execution code 
           $src_node_name = $ENIG_ap_name_str;
@@ -362,15 +424,17 @@ for($i=0;$i<$arr_size;$i++) {
           }
         } else {
           $success = 1; //also success because no mod needed
-                                                                                        writelog("\n\nNo modification needed.");
+                                                                                        writelog("\nNo modification needed.");
+          continue;
         }
       }
-    } //end of test for finding name in results
-  }// end of if/else for checking if device is in Enigma 
+    }
+  } // end of if/else for checking if device is in Enigma 
+
   if (($SF_ap_status != 'Removed') and ($SF_ap_status != 'Non Opmode') and (!$found_in_Enigma) and (!$modify_flag)) {
     if (empty($new_node_ip)) {                     // check to make sure that if the node is not found the required IP is available for adding. If not, fail.
                                                                                         writelog("\nCannot do anything. No node to modify, and cannot add without IP.");
-      $fail_end = 1;
+      continue;
     } else { // Add to enigma if above conditions true
       $add_node_result = add_node($src_node_ip, $src_node_name, $new_node_ip, $new_node_name, $new_node_desc, $site_code, $SF_id, $down_event_alarm_delay); //still need Account Name instead of ID
       if (preg_match('/OK/', $add_node_result)) {
@@ -381,26 +445,15 @@ for($i=0;$i<$arr_size;$i++) {
           $success = 0;
         }
       } else {
-//                                                                                    writelog("\n\nThe add_node REST API call returned: $add_node_result\n\n");
+//                                                                                      writelog("\n\nThe add_node REST API call returned: $add_node_result\n\n");
         $success = 0;
       }
     }
   }
-   
 } //end of for loop
 //											writelog("\nSUCCESS\n");
 
 writelog("\nSuccess: $success\n");
-
-
-
-ob_get_clean();
-if (($success == 1) or ($fail_end == 1)) {
-  respond('true');
-} else {
-  respond('false');
-  slack('Enigma access_point: failed and will be retried', 'mattd');
-}
 log_time();
 
-?>
+
