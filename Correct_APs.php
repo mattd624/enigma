@@ -211,7 +211,7 @@ $obj = 'Access_Point__c'; // salesforce object we want to query
 $get_fields = 'Id,Tower__r.Site_Code__c,Name,IP__c,General_Direction__c,Status__c'; // comma-delimited string: fields we want to query for (found in Salesforce>Setup>Create>Objects[Standard Fields|Custom Fields & Relationships])
 $where_clause = '';
 $query_return_limit = '2000';
-$wsdl = COMMON_PHP_DIR . '/wsdl/production.enterprise.wsdl.old';
+$wsdl = COMMON_PHP_DIR . '/wsdl/production.enterprise.wsdl.xml';
 $down_event_alarm_delay = '0';
 
 
@@ -293,7 +293,7 @@ $success = 0;
 foreach ($record_arr as $SF_id => $SF_id_arr) {
   writelog("\n\n\n_______________________________________________________________________________________________________ ");
   $modify_flag = 0; //default setting
-  $src_node_ip = '10.12.13.50';
+  $src_node_ip = '10.99.99.50';
   $src_node_name = '0_AP_Template_1';
 
   //print_r($SF_id);

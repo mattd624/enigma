@@ -6,27 +6,23 @@
 ini_set("soap.wsdl_cache_enabled", "0");  // clean WSDL for develop
 //ini_set("allow_url_fopen", true);
 date_default_timezone_set('America/Los_Angeles');
-require_once realpath(__DIR__ . '/../commonDirLocation.php');
-require_once realpath(__DIR__ . '/../EnigmaCallAPI.php');
-require_once realpath(COMMON_PHP_DIR . '/SlackMessagePost.php');
-require_once realpath(COMMON_PHP_DIR . '/checkOrgID.php');
-require_once realpath(COMMON_PHP_DIR . '/respond.php');
-require_once realpath(COMMON_PHP_DIR . '/parseNotification.php');
-require_once realpath(COMMON_PHP_DIR . '/deleteOldLogs.php');
-require_once realpath(COMMON_PHP_DIR . '/checkWait.php');
-require_once realpath(COMMON_PHP_DIR . '/writelog.php');
-require_once realpath(COMMON_PHP_DIR . '/logTime.php');
-require_once realpath(COMMON_PHP_DIR . '/creds.php');
+include realpath(__DIR__ . '/../commonDirLocation.php');
+include realpath(COMMON_PHP_DIR . '/SlackMessagePost.php');
+include realpath(COMMON_PHP_DIR . '/checkOrgID.php');
+include realpath(COMMON_PHP_DIR . '/respond.php');
+include realpath(COMMON_PHP_DIR . '/parseNotification.php');
+include realpath(__DIR__ . '/../EnigmaCallAPI.php');
+include realpath(COMMON_PHP_DIR . '/deleteOldLogs.php');
+include realpath(COMMON_PHP_DIR . '/checkWait.php');
+include realpath(COMMON_PHP_DIR . '/writelog.php');
+include realpath(COMMON_PHP_DIR . '/logTime.php');
 
 ini_set('soap.wsdl_cache_enabled',0); //this causes php to look at the wsdl every time and not cache it. If it is cached, then any edits to the wsdl will not be reflected unless this command is enabled.
 date_default_timezone_set('America/Los_Angeles');
 $f_name = pathinfo(__FILE__)['basename'];
 $f_dir = pathinfo(__FILE__)['dirname'];
 $log_dir = '/log/';
-$rel_path = substr(__FILE__, strlen($_SERVER['DOCUMENT_ROOT']));
-$keep_logs_days_old = 90;
-$sf_url = 'https://na131.salesforce.com';
-$heavy_logging = 0;
+
 ///////////////////////////////////////////////  FUNCTIONS  ///////////////////////////////////////////
 
 
@@ -165,7 +161,7 @@ function del_node($del_node_name, $opp_name='unknown')
 
 
 /////////////////////////////// START EXECUTION CODE ///////////////////////////////////////////
-deleteOldLogs($f_dir . $log_dir, $keep_logs_days_old);
+deleteOldLogs($f_dir . $log_dir, 90);
 
 writelog("\n\n=================================================================================\n");
 log_time();
@@ -217,23 +213,22 @@ $requestArray = array(
   'sObject' => '0'
 );
 */
+$success = 0;
+$fail_end = 0;
 unset($requestArray['sObject']);
-										heavylog( "\nXML_requestArray:\n\n");
-										heavylog($requestArray);
+//											writelog( "\nXML_requestArray:\n\n");
+//											writelog($requestArray);
 $arr_size=count($requestArray['MapsRecords']);
-										heavylog("\nNUMBER OF NOTIFICATIONS IN MESSAGE: $arr_size");
+//											writelog("\nNUMBER OF NOTIFICATIONS IN MESSAGE: $arr_size");
 $org_id = $requestArray['OrganizationId'];
 if (!checkOrgID($org_id)) {
-  $msg = "$rel_path: ID check failed: $org_id";
-                                                                                writelog("\n$msg\n");
-                                                                                slack($msg, 'mattd');
-                                                                                respond('true');
+  writelog("\nID check failed.");
+  respond('true');
   exit;  
 }
 
 //  $arrOfRecordArrays = array();
-try {
-  $success_ct = 0;
+
   for($i=0;$i<$arr_size;$i++) {
     $SF_acct_id = $requestArray['MapsRecords'][$i]['AccountId'];
     $SF_opp_id = $requestArray['MapsRecords'][$i]['Id'];
@@ -251,13 +246,14 @@ try {
       $SF_key_account = 'False';
     } 
     $msg = "SF Opportunity Name: $SF_opp_name\nSF SU IP: $SF_su_ip\nSF SU Site Code: $SF_site_code\nSF AP Name: $SF_ap_name\nSF Key Account: $SF_key_account";
-                                                                                writelog("\n$msg\n");
+                                                                                writelog("\n\n$msg");
+
     if ($SF_key_account === 'True') {
-      $src_node_ip = '10.99.99.11';
+      $src_node_ip = '10.12.13.11';
       $src_node_name = '0_key_account_template';
       $down_event_alarm_delay = 240;
     } else {
-      $src_node_ip = '10.99.99.10';
+      $src_node_ip = '10.12.13.10';
       $src_node_name = '0_su_template';
       $down_event_alarm_delay = 0;
     }
@@ -295,27 +291,25 @@ try {
       preg_match('/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/', $find_node_result, $match);  //Get the Enigma SU IP
       $ENIG_ip = $match[0];
       $msg = "Enigma SU Name: $ENIG_su_name_str\nEnigma SU IP: $ENIG_ip\nEnigma SU Site Code: $ENIG_su_site_code_str\nEnigma SU Description: $ENIG_su_dsc_str";
-                                                                                writelog("\n$msg\n");
+                                                                                writelog("\n\n$msg");
   
-      if (empty($SF_su_ip)) { // If the SU IP from SF is empty, check to see if the Enigma node was found earlier. 
-                              //If not, success. If so, delete Enigma node. Do a followup check to make sure it has been removed. If so, success.
+      if (empty($SF_su_ip)) { // If the SU IP from SF is empty, check to see if the Enigma node was found earlier. If not, success. If so, delete Enigma node. Do a followup check to make sure it has been removed. If it has, success = 1
 //                                                                                         writelog("\nSF_su_ip is empty\n");
+//        $find_node_result = find_node_by_name($SF_opp_name);
         if (!($find_node_result)) {
-          $success_ct++;
+          $success = 1;
         } else {
           $del_node_result = del_node($ENIG_su_name_str, $SF_opp_name);
           if ($del_node_result == 1) {
             $find_node_result2 = find_node_by_name($SF_opp_name);
             if ($find_node_result2 == 0) {
-              $success_ct++;
+              $success = 1;
             } else {
-              $msg = "$rel_path: $sf_url/$SF_opp_id - ERROR - $SF_opp_name - del_node failed. Node still found.";
-                                                                                writelog("\n$msg\n");
-
+              $success = 0;
+                                                                                writelog("ERROR - $SF_opp_name - del_node failed. Node still found.");
             }
           } else {
-              $msg = "$rel_path: $sf_url/$SF_opp_id - ERROR - $SF_opp_name - del_node function failed.";
-                                                                                writelog("\n$msg\n");
+                                                                                writelog("ERROR - $SF_opp_name - del_node function failed.");
           }
         }
       } elseif (!(empty($SF_su_ip))) { // If the SU IP from SF is not empty, make the checks below and determine whether to add or modify
@@ -328,7 +322,7 @@ try {
           $site_code = $SF_site_code;
           $add_node_result = add_node($src_node_ip, $src_node_name, $new_node_ip, $new_node_name, $new_node_desc, $site_code, $SF_acct_id, $down_event_alarm_delay );
           if (preg_match('/OK/', $add_node_result)) {
-            $success_ct++;
+            $success = 1;
           }
             //down_event_alarm_delay is defined above, toward the beginning of this big for loop
         }
@@ -371,50 +365,42 @@ try {
           $modify_node_result = modify_node($src_node_ip, $src_node_name, $new_node_ip, $new_node_name, $new_node_desc, $site_code, $SF_acct_id);
 //                                                                              writelog("\n\nMODIFY NODE RESULT: $modify_node_result\n\n");
           if ($modify_node_result) {
-            $success_ct++;
+            $success = 1;
           }
         } else {
-            $success_ct++; //also success because no mod needed
+            $success = 1; //also success because no mod needed
 //                                                                              writelog("\n\nNo modification needed.");
         }
       }
+      writelog("\nSuccess: $success\n");
+
     } elseif (($find_node_result == 0) and (empty($new_node_ip))) {                     // check to make sure that if the node is not found the required IP is available for adding. If not, fail.
-      $msg = "$rel_path: $sf_url/$SF_opp_id - No node to modify, and no IP tp add.";
-      $success_ct++;
+      $fail_end = 1;
+      $msg = "No node to modify, and no IP tp add.";
                                                                                 writelog("\n$msg");
       
     } else { // If node not found in Enigma...
 
       $add_node_result = add_node($src_node_ip, $src_node_name, $new_node_ip, $new_node_name, $new_node_desc, $site_code, $SF_acct_id, $down_event_alarm_delay ); //still need Account Name instead of ID
       if (preg_match('/OK/', $add_node_result)) {
-        $success_ct++;
+        $success = 1;
         $msg = "Added device to Enigma: $new_node_name \nIP: $new_node_ip \nDescription: $new_node_desc \nSite: $site_code";
                                                                                 writelog("\n$msg\n");
-      } elseif (preg_match('/already present/', $add_node_result)) {
-        $msg = "$rel_path: $sf_url/$SF_opp_id - $new_node_name was not added. $new_node_ip is already in Enigma. Most likely an SU with the same IP was not removed in SF.";
-                                                                                writelog("\n$msg\n");
-                                                                                slack($msg, 'mattd');
-        continue;                                                               
-      } else { 
-        $msg = "$rel_path: $sf_url/$SF_opp_id - add_node - REST API call returned: $add_node_result";
-                                                                                writelog("\n$msg\n");
-                                                                                slack($msg, 'mattd');
-        continue;
+      } else {
+//                                                                              writelog("\n\nThe add_node REST API call returned: $add_node_result\n\n");
+        $success = 0;
       }
     } // end of if/else for checking if device is in Enigma
   } //end of for loop
-} catch (exception $e) {
-                                                                                writelog("\nEXCEPTION: ");
-                                                                                writelog($e);
-                                                                                slack($e, 'mattd');
-}
-  
+//                                                                              writelog("\nSUCCESS\n");
 
-if ($success_ct !== $arr_size) {
-  $msg = "$rel_path: At least one failure occurred.";
-                                                                                slack($msg, 'mattd');
-}
 ob_get_clean();
-respond('true');
-                                                                                log_time();
-?>
+if (($success == 1) or ($fail_end == 1)) {
+  respond('true');
+} else {
+  respond('false');
+  slack('Enigma: failed and will be retried', 'mattd');
+}
+log_time();
+
+

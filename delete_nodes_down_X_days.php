@@ -36,7 +36,7 @@ function getSFInfo($obj = '',$fields = '', $where_clause = '', $query_return_lim
   $where_clause = "Status__c = 'Active'";
   $query_return_limit = 10;
 */
-  $wsdl = COMMON_PHP_DIR . '/wsdl/production.enterprise.wsdl.old';
+  $wsdl = COMMON_PHP_DIR . '/wsdl/production.enterprise.wsdl.xml';
   $down_event_alarm_delay = '0';
   //$fields_arr = explode(",", $fields);
 

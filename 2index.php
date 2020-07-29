@@ -16,7 +16,7 @@ require_once realpath(COMMON_PHP_DIR . '/deleteOldLogs.php');
 require_once realpath(COMMON_PHP_DIR . '/checkWait.php');
 require_once realpath(COMMON_PHP_DIR . '/writelog.php');
 require_once realpath(COMMON_PHP_DIR . '/logTime.php');
-require_once realpath(COMMON_PHP_DIR . '/creds.php');
+require_once realpath(COMMON_PHP_DIR . '/baton.php');
 
 ini_set('soap.wsdl_cache_enabled',0); //this causes php to look at the wsdl every time and not cache it. If it is cached, then any edits to the wsdl will not be reflected unless this command is enabled.
 date_default_timezone_set('America/Los_Angeles');
@@ -171,6 +171,32 @@ writelog("\n\n==================================================================
 log_time();
 
 ob_start();
+
+
+$busy = check_busy();
+$times = check_times();
+if ($busy) {
+  if($times <= 2) {
+    $times++;
+    set_times($times);
+    respond('false');
+    exit;
+  } else {
+    set_busy(0);
+    set_times(0);
+  }
+} else {
+  ob_clean();
+  respond('true');
+  header('Connection: close');
+  header('Content-Length: '.ob_get_length());
+  ob_end_flush();
+  ob_flush();
+  flush();
+  set_busy(1);
+  
+}
+
 
 
 $req = file_get_contents('php://input');
@@ -416,5 +442,6 @@ if ($success_ct !== $arr_size) {
 }
 ob_get_clean();
 respond('true');
+set_busy(0);
                                                                                 log_time();
 ?>

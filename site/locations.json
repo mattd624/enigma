@@ -1,0 +1,619 @@
+[
+  {
+    "loc_id_pri":"13",
+    "loc_dsc":"Atwater 95301",
+    "loc_state_id":"8",
+    "loc_pcode":"95301",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"91",
+    "loc_dsc":"Bakersfield 93251",
+    "loc_state_id":"8",
+    "loc_pcode":"93251",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"90",
+    "loc_dsc":"Bakersfield 93276",
+    "loc_state_id":"8",
+    "loc_pcode":"93276",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"17",
+    "loc_dsc":"Bakersfield 93301",
+    "loc_state_id":"8",
+    "loc_pcode":"93301",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"38",
+    "loc_dsc":"Bakersfield 93306",
+    "loc_state_id":"8",
+    "loc_pcode":"93306",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"83",
+    "loc_dsc":"Bakersfield 93311",
+    "loc_state_id":"8",
+    "loc_pcode":"93311",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"31",
+    "loc_dsc":"Bakersfield 93313",
+    "loc_state_id":"8",
+    "loc_pcode":"93313",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"56",
+    "loc_dsc":"Bakersfield 93314",
+    "loc_state_id":"8",
+    "loc_pcode":"93314",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"71",
+    "loc_dsc":"Buttonwillow 93206",
+    "loc_state_id":"8",
+    "loc_pcode":"93206",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"48",
+    "loc_dsc":"Catheys Valley 95306",
+    "loc_state_id":"8",
+    "loc_pcode":"95306",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"18",
+    "loc_dsc":"Chowchilla 93610",
+    "loc_state_id":"8",
+    "loc_pcode":"93610",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"11",
+    "loc_dsc":"Clovis 93619",
+    "loc_state_id":"8",
+    "loc_pcode":"93619",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"30",
+    "loc_dsc":"Coalinga 93210",
+    "loc_state_id":"8",
+    "loc_pcode":"93210",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"93",
+    "loc_dsc":"Cutler 93615",
+    "loc_state_id":"8",
+    "loc_pcode":"93615",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"53",
+    "loc_dsc":"Del Rey 93616",
+    "loc_state_id":"8",
+    "loc_pcode":"93616",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"21",
+    "loc_dsc":"Delano 93215",
+    "loc_state_id":"8",
+    "loc_pcode":"93215",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"54",
+    "loc_dsc":"Dinuba 93618",
+    "loc_state_id":"8",
+    "loc_pcode":"93618",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"22",
+    "loc_dsc":"Dos Palos 93620",
+    "loc_state_id":"8",
+    "loc_pcode":"93620",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"82",
+    "loc_dsc":"Escalon 95320",
+    "loc_state_id":"8",
+    "loc_pcode":"95320",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"45",
+    "loc_dsc":"Exeter 93221",
+    "loc_state_id":"8",
+    "loc_pcode":"93221",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"79",
+    "loc_dsc":"Farmington 95230",
+    "loc_state_id":"8",
+    "loc_pcode":"95230",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"16",
+    "loc_dsc":"Firebaugh 93622",
+    "loc_state_id":"8",
+    "loc_pcode":"93622",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"23",
+    "loc_dsc":"Five Points 93624",
+    "loc_state_id":"8",
+    "loc_pcode":"93624",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"26",
+    "loc_dsc":"Fowler 93625",
+    "loc_state_id":"8",
+    "loc_pcode":"93625",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"1",
+    "loc_dsc":"Fresno 93711",
+    "loc_state_id":"8",
+    "loc_pcode":"93711",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"25",
+    "loc_dsc":"Fresno 93721",
+    "loc_state_id":"8",
+    "loc_pcode":"93721",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"47",
+    "loc_dsc":"Fresno 93723",
+    "loc_state_id":"8",
+    "loc_pcode":"93723",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"37",
+    "loc_dsc":"Fresno 93725",
+    "loc_state_id":"8",
+    "loc_pcode":"93725",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"29",
+    "loc_dsc":"Fresno 93737",
+    "loc_state_id":"8",
+    "loc_pcode":"93737",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"73",
+    "loc_dsc":"Gustine 95322",
+    "loc_state_id":"8",
+    "loc_pcode":"95322",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"19",
+    "loc_dsc":"Hanford 93230",
+    "loc_state_id":"8",
+    "loc_pcode":"93230",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"28",
+    "loc_dsc":"Hilmar 95324",
+    "loc_state_id":"8",
+    "loc_pcode":"95324",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"70",
+    "loc_dsc":"Hilmar 95380",
+    "loc_state_id":"8",
+    "loc_pcode":"95380",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"67",
+    "loc_dsc":"Hughson 95326",
+    "loc_state_id":"8",
+    "loc_pcode":"95326",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"81",
+    "loc_dsc":"Huron 93234",
+    "loc_state_id":"8",
+    "loc_pcode":"93234",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"32",
+    "loc_dsc":"Kerman 93630",
+    "loc_state_id":"8",
+    "loc_pcode":"93630",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"80",
+    "loc_dsc":"Kettleman 93239",
+    "loc_state_id":"8",
+    "loc_pcode":"93239",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"33",
+    "loc_dsc":"Kingsburg 93631",
+    "loc_state_id":"8",
+    "loc_pcode":"93631",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"87",
+    "loc_dsc":"Lamont 93241",
+    "loc_state_id":"8",
+    "loc_pcode":"93241",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"66",
+    "loc_dsc":"Laton 93242",
+    "loc_state_id":"8",
+    "loc_pcode":"93242",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"34",
+    "loc_dsc":"Lemon Cove 93244",
+    "loc_state_id":"8",
+    "loc_pcode":"93244",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"12",
+    "loc_dsc":"Lemoore 93245",
+    "loc_state_id":"8",
+    "loc_pcode":"93245",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"72",
+    "loc_dsc":"Los Banos 93635",
+    "loc_state_id":"8",
+    "loc_pcode":"93635",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"89",
+    "loc_dsc":"Lost Hills 93249",
+    "loc_state_id":"8",
+    "loc_pcode":"93249",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"55",
+    "loc_dsc":"Madera 93637",
+    "loc_state_id":"8",
+    "loc_pcode":"93637",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"14",
+    "loc_dsc":"Madera 93638",
+    "loc_state_id":"8",
+    "loc_pcode":"93638",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"63",
+    "loc_dsc":"Manteca 95336",
+    "loc_state_id":"8",
+    "loc_pcode":"95336",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"64",
+    "loc_dsc":"Manteca 95337",
+    "loc_state_id":"8",
+    "loc_pcode":"95337",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"88",
+    "loc_dsc":"Maricopa 93252",
+    "loc_state_id":"8",
+    "loc_pcode":"93252",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"39",
+    "loc_dsc":"Mariposa 95338",
+    "loc_state_id":"8",
+    "loc_pcode":"95338",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"36",
+    "loc_dsc":"Mendota 93640",
+    "loc_state_id":"8",
+    "loc_pcode":"93640",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"95",
+    "loc_dsc":"Merced 95301",
+    "loc_state_id":"8",
+    "loc_pcode":"95301",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"51",
+    "loc_dsc":"Merced 95340",
+    "loc_state_id":"8",
+    "loc_pcode":"95340",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"69",
+    "loc_dsc":"Merced 95341",
+    "loc_state_id":"8",
+    "loc_pcode":"95341",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"77",
+    "loc_dsc":"Modesto 95355",
+    "loc_state_id":"8",
+    "loc_pcode":"95355",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"65",
+    "loc_dsc":"Modesto 95358",
+    "loc_state_id":"8",
+    "loc_pcode":"95358",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"78",
+    "loc_dsc":"Oakdale 95361",
+    "loc_state_id":"8",
+    "loc_pcode":"95361",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"20",
+    "loc_dsc":"Oakhurst 93644",
+    "loc_state_id":"8",
+    "loc_pcode":"93644",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"42",
+    "loc_dsc":"Oakhurst-Northfork 93634",
+    "loc_state_id":"8",
+    "loc_pcode":"93634",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"75",
+    "loc_dsc":"Oildale 93308",
+    "loc_state_id":"8",
+    "loc_pcode":"93308",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"43",
+    "loc_dsc":"Parlier 93648",
+    "loc_state_id":"8",
+    "loc_pcode":"93648",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"44",
+    "loc_dsc":"Pixley 93256",
+    "loc_state_id":"8",
+    "loc_pcode":"93256",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"35",
+    "loc_dsc":"Porterville 93257",
+    "loc_state_id":"8",
+    "loc_pcode":"93257",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"57",
+    "loc_dsc":"Reedley 93654",
+    "loc_state_id":"8",
+    "loc_pcode":"93654",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"46",
+    "loc_dsc":"Riverdale 93656",
+    "loc_state_id":"8",
+    "loc_pcode":"93656",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"49",
+    "loc_dsc":"San Jose 95119",
+    "loc_state_id":"8",
+    "loc_pcode":"95119",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"10",
+    "loc_dsc":"Sanger 93657",
+    "loc_state_id":"8",
+    "loc_pcode":"93657",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"58",
+    "loc_dsc":"Shafter 93263",
+    "loc_state_id":"8",
+    "loc_pcode":"93263",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"41",
+    "loc_dsc":"Springville 93265",
+    "loc_state_id":"8",
+    "loc_pcode":"93265",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"74",
+    "loc_dsc":"Stevinson 95374",
+    "loc_state_id":"8",
+    "loc_pcode":"95374",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"62",
+    "loc_dsc":"Stockton 95201",
+    "loc_state_id":"8",
+    "loc_pcode":"95201",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"59",
+    "loc_dsc":"Stockton 95206",
+    "loc_state_id":"8",
+    "loc_pcode":"95206",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"50",
+    "loc_dsc":"Stratford 93266",
+    "loc_state_id":"8",
+    "loc_pcode":"93266",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"85",
+    "loc_dsc":"Strathmore 93267",
+    "loc_state_id":"8",
+    "loc_pcode":"93267",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"24",
+    "loc_dsc":"Taft 93268",
+    "loc_state_id":"8",
+    "loc_pcode":"93268",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"61",
+    "loc_dsc":"Tracy 95304",
+    "loc_state_id":"8",
+    "loc_pcode":"95304",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"94",
+    "loc_dsc":"Tulare 93257",
+    "loc_state_id":"8",
+    "loc_pcode":"93257",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"15",
+    "loc_dsc":"Tulare 93274",
+    "loc_state_id":"8",
+    "loc_pcode":"93274",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"86",
+    "loc_dsc":"Tulare 93291",
+    "loc_state_id":"8",
+    "loc_pcode":"93291",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"92",
+    "loc_dsc":"Tulare 93724",
+    "loc_state_id":"8",
+    "loc_pcode":"93724",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"68",
+    "loc_dsc":"Turlock 95380",
+    "loc_state_id":"8",
+    "loc_pcode":"95380",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"2",
+    "loc_dsc":"unassigned",
+    "loc_state_id":"9",
+    "loc_pcode":"0000",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"27",
+    "loc_dsc":"Visalia 93291",
+    "loc_state_id":"8",
+    "loc_pcode":"93291",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"60",
+    "loc_dsc":"Visalia 93292",
+    "loc_state_id":"8",
+    "loc_pcode":"93292",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"52",
+    "loc_dsc":"Wasco 93280",
+    "loc_state_id":"8",
+    "loc_pcode":"93280",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"76",
+    "loc_dsc":"Waterford 95388",
+    "loc_state_id":"8",
+    "loc_pcode":"95388",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"40",
+    "loc_dsc":"Westley 95387",
+    "loc_state_id":"8",
+    "loc_pcode":"95387",
+    "loc_county":""
+  },
+  {
+    "loc_id_pri":"84",
+    "loc_dsc":"Woodlake 93286",
+    "loc_state_id":"8",
+    "loc_pcode":"93286",
+    "loc_county":""
+  }
+]
+
